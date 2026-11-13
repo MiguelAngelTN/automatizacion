@@ -202,8 +202,8 @@ evidencia/               Capturas de pantalla y logs de la ejecución
 
 **Criterio:** lo que el *negocio* necesita leer (los `.feature`) está en una carpeta
 visible en la raíz; lo que es código de prueba, en `src/test`; lo que es configuración
-de la infraestructura de pruebas, en su propia carpeta. Separar `features/` de
-`src/test/resources/features/` permite que el negocio lea y discuta los escenarios sin
+de la infraestructura de pruebas, en su propia carpeta. Mantener `features/` fuera de
+`src/test/resources/` permite que el negocio lea y discuta los escenarios sin
 conocer la estructura de Maven.
 
 ---

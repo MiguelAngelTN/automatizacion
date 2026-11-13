@@ -17,7 +17,6 @@ concurrency:
 
 env:
   JAVA_VERSION: '17'
-  MAVEN_OPTS: '-Dmaven.repo.local=${{ github.workspace }}/.m2/repository'
 
 jobs:
 
@@ -93,7 +92,7 @@ jobs:
 
       - name: Instalar Apache JMeter
         run: |
-          curl -sSL https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz -o jmeter.tgz
+          curl -fsSL https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.3.tgz -o jmeter.tgz
           tar -xzf jmeter.tgz
           echo "$PWD/apache-jmeter-5.6.3/bin" >> $GITHUB_PATH
 
@@ -115,6 +114,7 @@ jobs:
 
       - name: Ejecutar plan de carga
         run: |
+          mkdir -p performance/resultados
           jmeter -n -t performance/performance-login.jmx \
             -l performance/resultados/login.jtl \
             -e -o performance/reporte-html \
@@ -157,7 +157,7 @@ jobs:
           python3 scripts/generar-dashboard.py \
             --surefire artefactos/reportes-navegables/surefire-reports \
             --cucumber artefactos/reportes-navegables/cucumber-results.json \
-            --jacoco artefactos/reportes-navegables/jacoco/jacoco.xml \
+            --jacoco artefactos/reportes-navegables/site/jacoco/jacoco.xml \
             --jmeter artefactos/reporte-performance-jmeter/resultados/login.jtl \
             --salida dashboard/metricas.html
 

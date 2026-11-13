@@ -45,7 +45,7 @@ pipeline {
             }
             post {
                 always {
-                    junit testResults: 'target/cucumber-results.json', allowEmptyResults: true
+                    junit testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true
                     publishHTML(target: [
                         reportDir : 'target/cucumber-report',
                         reportFiles : 'cucumber-report.html',
@@ -85,6 +85,7 @@ pipeline {
                         com.empresa.pruebas.performance.ServidorPerformance 8080 > servidor.log 2>&1 &
                     echo $! > servidor.pid
                     sleep 5
+                    mkdir -p performance/resultados
                     jmeter -n -t performance/performance-login.jmx \
                         -l performance/resultados/login.jtl \
                         -e -o performance/reporte-html

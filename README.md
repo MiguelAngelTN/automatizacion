@@ -76,19 +76,19 @@ automatica-pruebas/
 │
 ├── src/test/java/com/empresa/pruebas/
 │   ├── modelo/                   # Pruebas unitarias atómicas (JUnit 5)
-│   │   ├── CalculadoraTest.java           (7 pruebas)
-│   │   ├── ServicioAutenticacionTest.java (6 pruebas)
-│   │   └── CarritoTest.java               (8 pruebas)
+│   │   ├── CalculadoraTest.java           (8 pruebas)
+│   │   ├── ServicioAutenticacionTest.java (9 pruebas)
+│   │   └── CarritoTest.java               (10 pruebas)
 │   └── bdd/pasos/                # Step definitions (Cucumber + PicoContainer)
 │       ├── Contexto.java          # Estado compartido por escenario
 │       ├── PasosAutenticacion.java
 │       └── PasosCompra.java
 │
+├── features/                     # Archivos Gherkin (visibles para el negocio)
+│   ├── autenticacion.feature
+│   └── compra.feature
+│
 ├── src/test/resources/
-│   ├── features/                 # Archivos Gherkin
-│   │   ├── autenticacion.feature
-│   │   └── compra.feature
-│   ├── cucumber.properties        # Plugins (pretty, html, json) y ejecución paralela
 │   └── junit-platform.properties # Configuración de JUnit Platform y de Cucumber
 │
 ├── performance/
@@ -365,7 +365,7 @@ ingreso de clientes.
 | **Muestras** | Volumen mínimo para que las métricas sean representativas | ≥ 100 |
 
 > **Por qué p95 y p99:** el promedio oculta la experiencia de los usuarios en el peor
-> caso. Los percentiles muestran cuántos usuarios-Earthxguelen la cola de latencia, que
+> caso. Los percentiles muestran cuántos usuarios sufren la cola de latencia, que
 > es justamente donde aparecen los incidentes en producción.
 
 ### 9.3 Sistema bajo prueba
@@ -387,7 +387,7 @@ máquina.
 - Performance: TPS, latencias (mínima, media, p50, p90, p95, p99), tasa de error.
 
 Además se entrega la configuración de la stack de observabilidad
-(`monitoreo/docker-compose.yml` con InfluxDB + Grafana) paraenvironments con Docker,
+(`monitoreo/docker-compose.yml` con InfluxDB + Grafana) para entornos con Docker,
 y las reglas de alerta en `monitoreo/alertas.yml`.
 
 ---

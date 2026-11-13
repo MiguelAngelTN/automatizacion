@@ -12,7 +12,7 @@
 ## 1. ¿Qué es una sesión *Three Amigos*?
 
 Es una reunión corta (30–60 minutos) en la que **una persona del negocio, una persona de
-QA y una persona de desarrollo** seieiunen para entender una funcionalidad **antes** de
+QA y una persona de desarrollo** reúnen para entender una funcionalidad **antes** de
 escribir código. El objetivo no es implementar, sino **alinear el lenguaje y definir los
 criterios de aceptación** que luego se convertirán en escenarios automatizados.
 
@@ -86,6 +86,30 @@ desde su perspectiva.
 > **Nota de seguridad (DEV):** los casos CA-2, CA-3 y CA-4 devuelven **el mismo mensaje**
 > para no revelar si el usuario existe o está inactivo (enumeración de cuentas).
 
+### CA-5 — Cálculo del total del carrito
+
+> **Given** que el carrito está vacío
+> **When** se agregan dos productos al carrito
+> **Then** el total es la suma de los precios y el carrito tiene 2 ítems
+
+### CA-6 — Aplicación de descuentos por código
+
+> **Given** un carrito con un producto de 100000
+> **When** se aplica el código `BIENVENIDA10` (10 %) o `VERANO20` (20 %)
+> **Then** el total es 90000 o 80000 respectivamente; sin código, el total no cambia
+
+### CA-7 — Confirmación de un pedido
+
+> **Given** un carrito con un producto y un código de descuento aplicado
+> **When** se confirma el pedido
+> **Then** el pedido queda con el total con descuento y un identificador asignado
+
+### CA-8 — Carrito vacío
+
+> **Given** un carrito sin productos
+> **When** se intenta confirmar el pedido
+> **Then** el sistema rechaza la operación
+
 ---
 
 ## 5. Ejemplos discutidos en la sesión
@@ -100,7 +124,7 @@ desde su perspectiva.
 | 6 | `desconocido` | `Secret123` | — | Error de credenciales | Usuario inexistente |
 
 El **ejemplo 4** fue el que exigió una tabla de *Examples*: el resultado depende de
-dos variables (estado de la cuenta y contraseña). Se decided que el estado se modelara
+dos variables (estado de la cuenta y contraseña). Se decidió que el estado se modelara
 como un parámetro del escenario en lugar de escribir un escenario aparte por cada caso.
 
 ---
@@ -139,7 +163,8 @@ como un parámetro del escenario en lugar de escribir un escenario aparte por ca
 | CA-1 Autenticación exitosa | *Autenticación exitosa con credenciales válidas* | `features/autenticacion.feature` |
 | CA-2 Contraseña incorrecta | *Autenticación fallida con contraseña incorrecta* | `features/autenticacion.feature` |
 | CA-3 Cuenta inactiva | *Validación del acceso según el estado de la cuenta* (ejemplo 2) | `features/autenticacion.feature` |
-| CA-4 Usuario inexistente | *Validación del acceso según el estado de la cuenta* (ejemplo 3) | `features/autenticacion.feature` |
+| CA-4 Usuario inexistente | *Un usuario inexistente produce un error de credenciales* (prueba unitaria) | `ServicioAutenticacionTest.java` |
+| CA-2 (variante) Contraseña incorrecta en tabla | *Validación del acceso según el estado de la cuenta* (ejemplo 3) | `features/autenticacion.feature` |
 | CA-5 Cálculo del total del carrito | *Cálculo del total de un carrito con dos productos* | `features/compra.feature` |
 | CA-6 Aplicación de descuentos | *Aplicación de descuentos por código* (3 ejemplos) | `features/compra.feature` |
 | CA-7 Confirmación de pedido | *Confirmación de un pedido con descuento aplicado* | `features/compra.feature` |

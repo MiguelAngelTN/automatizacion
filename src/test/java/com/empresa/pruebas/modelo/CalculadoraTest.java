@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * Pruebas unitarias atomicas sobre {@link Calculadora}.
  *
  * <p>Cada test verifica <b>una sola regla de negocio</b> y no depende del orden ni del
- * estado dejado por otros testes (atomicidad e independencia). Parajes eso, cada test
+ * estado dejado por otros tests (atomicidad e independencia). Por eso, cada test
  * crea su propia instancia de {@link Calculadora} en lugar de compartirla como campo.</p>
  */
 @Tag("unit")

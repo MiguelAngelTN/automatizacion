@@ -10,13 +10,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
- * Pruebas unitarias atomicas sobre {@link ServicioAutenticacion}.
- *
- * <p>Se utiliza {@link BeforeEach} para preparar un <i>fixture</i> nuevo en cada test:
- * esto garantiza el aislamiento (independencia) y evita el acoplamiento entre tests
- * a traves de estado compartido.</p>
- */
+
 @Tag("unit")
 @DisplayName("Servicio de autenticacion - Pruebas unitarias")
 class ServicioAutenticacionTest {

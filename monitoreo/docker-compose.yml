@@ -1,20 +1,3 @@
-# ===================================================================
-# Stack de observabilidad para el dashboard de métricas
-# -------------------------------------------------------------------
-# Propuesta de observabilidad continua: el pipeline publica las métricas
-# de cada ejecución en InfluxDB y Grafana las visualiza y aplica las
-# reglas de alerta definidas en monitoreo/alertas.yml.
-#
-# Uso:
-#   docker compose -f monitoreo/docker-compose.yml up -d
-#   -> InfluxDB en http://localhost:8086  (usuario: admin / clave: admin123)
-#   -> Grafana  en http://localhost:3000  (usuario: admin / clave: admin)
-#
-# En el pipeline, el job "dashboard-y-alertas" escribe las métricas en
-# InfluxDB mediante la API HTTP:
-#   POST http://localhost:8086/write?db=automatica&precision=s
-#   metricas,etiqueta=valor ...
-# ===================================================================
 
 version: "3.8"
 

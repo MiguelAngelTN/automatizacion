@@ -5,12 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Servicio de autenticacion de usuarios.
- *
- * <p>Es la pieza de negocio modelada en el feature {@code autenticacion.feature}
- * (escenarios BDD de la Actividad 2).</p>
- */
+
 public class ServicioAutenticacion {
 
     private final Map<String, Usuario> usuarios = new java.util.LinkedHashMap<>();

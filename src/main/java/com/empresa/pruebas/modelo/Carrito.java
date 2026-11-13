@@ -6,11 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Carrito de compras.
- *
- * <p>Modela la funcionalidad de compra cubierta por {@code compra.feature}.</p>
- */
+
 public class Carrito {
 
     /** Codigos de descuento soportados y su porcentaje aplicado. */

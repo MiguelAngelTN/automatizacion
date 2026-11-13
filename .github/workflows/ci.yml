@@ -20,9 +20,7 @@ env:
 
 jobs:
 
-  # ------------------------------------------------------------------
-  # 1) Compilacion + pruebas unitarias + BDD + metricas de cobertura
-  # ------------------------------------------------------------------
+
   verificar:
     name: Verificar (JUnit 5 + BDD + cobertura)
     runs-on: ubuntu-latest
@@ -71,9 +69,7 @@ jobs:
           retention-days: 15
           if-no-files-found: warn
 
-  # ------------------------------------------------------------------
-  # 2) Prueba de performance con Apache JMeter
-  # ------------------------------------------------------------------
+
   performance:
     name: Performance (JMeter)
     runs-on: ubuntu-latest
@@ -135,9 +131,7 @@ jobs:
           retention-days: 15
           if-no-files-found: warn
 
-  # ------------------------------------------------------------------
-  # 3) Dashboard de metricas y puerta de calidad final
-  # ------------------------------------------------------------------
+
   dashboard-y-alertas:
     name: Dashboard de métricas y alertas
     runs-on: ubuntu-latest

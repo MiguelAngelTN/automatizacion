@@ -3,9 +3,7 @@ package com.empresa.pruebas.modelo;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-/**
- * Pedido confirmado a partir de un carrito.
- */
+
 public class Pedido {
 
     private final String id;

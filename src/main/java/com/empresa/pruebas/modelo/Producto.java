@@ -2,9 +2,7 @@ package com.empresa.pruebas.modelo;
 
 import java.util.Objects;
 
-/**
- * Producto del catalogo de la tienda.
- */
+
 public class Producto {
 
     private final String sku;

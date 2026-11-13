@@ -1,8 +1,6 @@
 package com.empresa.pruebas.modelo;
 
-/**
- * Usuario del sistema. Objeto inmutable (valores).
- */
+
 public class Usuario {
 
     private final String nombreUsuario;

@@ -1,13 +1,6 @@
 package com.empresa.pruebas.modelo;
 
-/**
- * Calculadora de dominio.
- *
- * <p>Clase sin estado (stateless) y sin dependencias externas: esto garantiza que
- * los tests unitarios puedan ejecutarse de forma <b>atomica</b> e <b>independiente</b>
- * (criterio de la pauta de evaluacion: "mantencion de atomicidad... alta cohesion y
- * bajo acoplamiento").</p>
- */
+
 public class Calculadora {
 
     /**

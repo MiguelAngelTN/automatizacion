@@ -3,9 +3,7 @@ package com.empresa.pruebas.modelo;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-/**
- * Token de sesion devuelto tras una autenticacion exitosa.
- */
+
 public class Token {
 
     /** Vigencia del token en minutos (criterio de aceptacion validado en BDD). */

@@ -15,21 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.concurrent.Executors;
 
-/**
- * Servidor HTTP minimalista usado como <i>sistema bajo prueba</i> para la prueba de
- * performance con Apache JMeter.
- *
- * <p>Se apoya en el servidor HTTP incluido en el JDK ({@code com.sun.net.httpserver}) para
- * no sumar dependencias externas al proyecto y así mantener el pipeline liviano.</p>
- *
- * <p>Endpoints expuestos:</p>
- * <ul>
- *   <li>{@code GET  /api/salud}          -&gt; verificacion de vida del servicio</li>
- *   <li>{@code GET  /api/suma?a=&amp;b=}   -&gt; calculo de una operacion</li>
- *   <li>{@code POST /api/login}          -&gt; autenticacion de usuario</li>
- *   <li>{@code POST /api/pedidos}        -&gt; confirmacion de un pedido</li>
- * </ul>
- */
+
 public final class ServidorPerformance {
 
     private static final Calculadora CALCULADORA = new Calculadora();

@@ -1,12 +1,3 @@
-# ===================================================================
-# Umbrales (SLA) del pipeline de pruebas
-# -------------------------------------------------------------------
-# Este archivo es la fuente de verdad de los umbrales. El script
-# scripts/verificar-umbrales.py los replica en su diccionario UMBRALES;
-# si se modifica aqui, hay que actualizarlo tambien alla para que ambos
-# queden sincronizados.
-# ===================================================================
-
 version: 1
 proyecto: automatica-pruebas
 

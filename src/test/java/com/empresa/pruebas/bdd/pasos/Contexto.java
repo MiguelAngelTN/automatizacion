@@ -7,13 +7,7 @@ import com.empresa.pruebas.modelo.ServicioPedidos;
 import com.empresa.pruebas.modelo.Token;
 import com.empresa.pruebas.modelo.Usuario;
 
-/**
- * Estado compartido entre los pasos de un mismo escenario (BDD).
- *
- * <p>El objeto lo crea el contenedor de inyeccion de dependencias (PicoContainer) una vez
- * por escenario, de modo que cada escenario parte de un contexto limpio y los pasos no
- * dependen del orden de ejecución.</p>
- */
+
 public class Contexto {
 
     private ServicioAutenticacion servicioAutenticacion = new ServicioAutenticacion();

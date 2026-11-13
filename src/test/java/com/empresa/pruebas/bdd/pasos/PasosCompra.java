@@ -9,12 +9,7 @@ import io.cucumber.java.en.When;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Definiciones de pasos (step definitions) del feature {@code compra.feature}.
- *
- * <p>Cada paso verifica una sola regla de negocio y se apoya en el {@link Contexto}
- * compartido del escenario (inyectado con PicoContainer).</p>
- */
+
 public class PasosCompra {
 
     private final Contexto contexto;

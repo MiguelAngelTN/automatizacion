@@ -1,8 +1,6 @@
 package com.empresa.pruebas.modelo;
 
-/**
- * Servicio de pedidos: confirma la compra de un carrito.
- */
+
 public class ServicioPedidos {
 
     /**

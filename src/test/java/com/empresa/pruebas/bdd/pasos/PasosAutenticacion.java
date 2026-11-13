@@ -9,18 +9,7 @@ import io.cucumber.java.en.When;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Definiciones de pasos (step definitions) del feature {@code autenticacion.feature}.
- *
- * <p>Se usan Cucumber Expressions con los tipos estandar ({@code string}, {@code int}).
- * El tipo {@code string} exige que los valores esten entre comillas en el Gherkin
- * (por ejemplo {@code "mgomez"}), ya que de lo contrario se capturaria solo la primera
- * palabra.</p>
- *
- * <p>El estado de cada escenario viaja en {@link Contexto}, inyectado por el contenedor
- * de dependencias PicoContainer, de modo que los pasos no dependen del orden de
- * ejecucion ni comparten estado entre escenarios.</p>
- */
+
 public class PasosAutenticacion {
 
     private final Contexto contexto;

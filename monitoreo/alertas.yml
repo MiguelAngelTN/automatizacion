@@ -1,13 +1,3 @@
-# ===================================================================
-# Reglas de alerta para la observabilidad del pipeline
-# -------------------------------------------------------------------
-# Formato compatible con las reglas de alerta de Prometheus / Alertmanager.
-# Cada regla define la condicion que dispara la alerta, su severidad y
-# el canal de notificacion. El job "dashboard-y-alertas" del workflow
-# (.github/workflows/ci.yml) evalua estos mismos umbrales mediante
-# scripts/verificar-umbrales.py y hace fallar el pipeline, lo que a su
-# vez dispara la notificacion al canal configurado.
-# ===================================================================
 
 groups:
   - name: pruebas-funcionales

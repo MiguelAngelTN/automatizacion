@@ -8,9 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
- * Pruebas unitarias atomicas sobre {@link Carrito} y {@link ServicioPedidos}.
- */
+
 @Tag("unit")
 @DisplayName("Carrito y pedidos - Pruebas unitarias")
 class CarritoTest {

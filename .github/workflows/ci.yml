@@ -1,0 +1,187 @@
+name: CI - Pipeline de Integración Continua
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  JAVA_VERSION: '17'
+  MAVEN_OPTS: '-Dmaven.repo.local=${{ github.workspace }}/.m2/repository'
+
+jobs:
+
+  # ------------------------------------------------------------------
+  # 1) Compilacion + pruebas unitarias + BDD + metricas de cobertura
+  # ------------------------------------------------------------------
+  verificar:
+    name: Verificar (JUnit 5 + BDD + cobertura)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Mostrar versiones del entorno
+        run: |
+          java -version
+          mvn -version
+
+      - name: Compilar, ejecutar tests y generar reportes
+        run: mvn -B clean verify
+
+      - name: Resumen de pruebas unitarias (JUnit 5)
+        if: always()
+        run: |
+          set -e
+          echo "### Pruebas unitarias ###" >> $GITHUB_STEP_SUMMARY
+          if ls target/surefire-reports/*.txt >/dev/null 2>&1; then
+            grep -h "Tests run" target/surefire-reports/*.txt >> $GITHUB_STEP_SUMMARY || true
+          else
+            echo "Sin reportes unitarios" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Publicar reporte navegable de BDD, Allure y cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reportes-navegables
+          path: |
+            target/surefire-reports/
+            target/cucumber-report/
+            target/allure-report/
+            target/site/jacoco/
+            target/cucumber-results.json
+          retention-days: 15
+          if-no-files-found: warn
+
+  # ------------------------------------------------------------------
+  # 2) Prueba de performance con Apache JMeter
+  # ------------------------------------------------------------------
+  performance:
+    name: Performance (JMeter)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: verificar
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Instalar Apache JMeter
+        run: |
+          curl -sSL https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz -o jmeter.tgz
+          tar -xzf jmeter.tgz
+          echo "$PWD/apache-jmeter-5.6.3/bin" >> $GITHUB_PATH
+
+      - name: Compilar el sistema bajo prueba
+        run: mvn -B clean package -DskipTests
+
+      - name: Levantar el servidor bajo prueba
+        run: |
+          nohup java -cp target/classes com.empresa.pruebas.performance.ServidorPerformance 8080 \
+            > servidor.log 2>&1 &
+          echo $! > servidor.pid
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:8080/api/salud > /dev/null; then
+              echo "Servidor listo"; break
+            fi
+            sleep 1
+          done
+          curl -sf http://127.0.0.1:8080/api/salud
+
+      - name: Ejecutar plan de carga
+        run: |
+          jmeter -n -t performance/performance-login.jmx \
+            -l performance/resultados/login.jtl \
+            -e -o performance/reporte-html \
+            -Jjmeter.save.saveservice.output_format=csv
+
+      - name: Detener el servidor bajo prueba
+        if: always()
+        run: kill $(cat servidor.pid) || true
+
+      - name: Publicar reporte HTML de JMeter
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-performance-jmeter
+          path: |
+            performance/reporte-html/
+            performance/resultados/
+          retention-days: 15
+          if-no-files-found: warn
+
+  # ------------------------------------------------------------------
+  # 3) Dashboard de metricas y puerta de calidad final
+  # ------------------------------------------------------------------
+  dashboard-y-alertas:
+    name: Dashboard de métricas y alertas
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [ verificar, performance ]
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Descargar artefactos de la etapa anterior
+        uses: actions/download-artifact@v4
+        with:
+          path: artefactos
+
+      - name: Generar dashboard consolidado de métricas
+        run: |
+          python3 scripts/generar-dashboard.py \
+            --surefire artefactos/reportes-navegables/surefire-reports \
+            --cucumber artefactos/reportes-navegables/cucumber-results.json \
+            --jacoco artefactos/reportes-navegables/jacoco/jacoco.xml \
+            --jmeter artefactos/reporte-performance-jmeter/resultados/login.jtl \
+            --salida dashboard/metricas.html
+
+      - name: Evaluar umbrales y disparar alertas
+        run: |
+          python3 scripts/verificar-umbrales.py \
+            --jmeter artefactos/reporte-performance-jmeter/resultados/login.jtl \
+            --salida dashboard/estado-umbrales.json
+
+      - name: Publicar dashboard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dashboard-metricas
+          path: dashboard/
+          retention-days: 15
+
+      - name: Resumen en la Pull Request
+        if: always()
+        run: |
+          {
+            echo "### Pipeline de Pruebas ###"
+            echo ""
+            cat dashboard/estado-umbrales.json 2>/dev/null || echo "Sin datos de umbrales"
+            echo ""
+            echo "Dashboard: descarga el artefacto **dashboard-metricas**"
+          } >> $GITHUB_STEP_SUMMARY

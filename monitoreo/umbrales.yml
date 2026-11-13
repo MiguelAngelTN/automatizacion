@@ -1,0 +1,69 @@
+# ===================================================================
+# Umbrales (SLA) del pipeline de pruebas
+# -------------------------------------------------------------------
+# Este archivo es la fuente de verdad de los umbrales. El script
+# scripts/verificar-umbrales.py los replica en su diccionario UMBRALES;
+# si se modifica aqui, hay que actualizarlo tambien alla para que ambos
+# queden sincronizados.
+# ===================================================================
+
+version: 1
+proyecto: automatica-pruebas
+
+umbrales_funcionales:
+  - metrica: tests_unitarios_fallidos
+    operador: "<="
+    valor: 0
+    severidad: critico
+    descripcion: Ninguna prueba unitaria debe fallar; el pipeline bloquea el despliegue.
+    canal: "correo al jefe de QA + Slack #qa-alertas + apertura de incident"
+
+  - metrica: escenarios_bdd_fallidos
+    operador: "<="
+    valor: 0
+    severidad: critico
+    descripcion: Todos los criterios de aceptacion deben cumplirse.
+    canal: "correo al jefe de QA + Slack #qa-alertas + apertura de incident"
+
+  - metrica: cobertura_lineas_pct
+    operador: ">="
+    valor: 70
+    severidad: alto
+    descripcion: Quality gate de JaCoCo configurado en el pom.xml.
+    canal: "Slack #qa-alertas + correo al equipo de automatizacion"
+
+umbrales_performance:
+  - metrica: tps
+    operador: ">="
+    valor: 50
+    severidad: critico
+    descripcion: Throughput minimo sostenido del endpoint bajo prueba.
+    canal: "correo al jefe de QA + Slack #qa-alertas + apertura de incident"
+
+  - metrica: latencia_p95_ms
+    operador: "<="
+    valor: 500
+    severidad: alto
+    descripcion: El 95% de las peticiones debe responderse en menos de 500 ms.
+    canal: "Slack #qa-alertas + correo al equipo de automatizacion"
+
+  - metrica: latencia_p99_ms
+    operador: "<="
+    valor: 1000
+    severidad: medio
+    descripcion: Cola de latencia: ninguna peticion debe superar 1 segundo.
+    canal: "Slack #qa-alertas + ticket en el tablero de calidad"
+
+  - metrica: tasa_error_pct
+    operador: "<="
+    valor: 1
+    severidad: critico
+    descripcion: Tasa maxima de errores aceptable sobre el total de muestras.
+    canal: "correo al jefe de QA + Slack #qa-alertas + apertura de incident"
+
+  - metrica: muestras
+    operador: ">="
+    valor: 100
+    severidad: medio
+    descripcion: Numero minimo de muestras para que las metricas sean representativas.
+    canal: "Slack #qa-alertas + ticket en el tablero de calidad"

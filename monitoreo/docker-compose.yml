@@ -1,0 +1,65 @@
+# ===================================================================
+# Stack de observabilidad para el dashboard de métricas
+# -------------------------------------------------------------------
+# Propuesta de observabilidad continua: el pipeline publica las métricas
+# de cada ejecución en InfluxDB y Grafana las visualiza y aplica las
+# reglas de alerta definidas en monitoreo/alertas.yml.
+#
+# Uso:
+#   docker compose -f monitoreo/docker-compose.yml up -d
+#   -> InfluxDB en http://localhost:8086  (usuario: admin / clave: admin123)
+#   -> Grafana  en http://localhost:3000  (usuario: admin / clave: admin)
+#
+# En el pipeline, el job "dashboard-y-alertas" escribe las métricas en
+# InfluxDB mediante la API HTTP:
+#   POST http://localhost:8086/write?db=automatica&precision=s
+#   metricas,etiqueta=valor ...
+# ===================================================================
+
+version: "3.8"
+
+services:
+
+  influxdb:
+    image: influxdb:2.7-alpine
+    container_name: influxdb-automatica
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: admin123
+      DOCKER_INFLUXDB_INIT_ORG: automatica
+      DOCKER_INFLUXDB_INIT_BUCKET: pruebas
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: token-automatica-pruebas
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  grafana:
+    image: grafana/grafana:11.1.0
+    container_name: grafana-automatica
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: influxdb-flux-datasource
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      influxdb:
+        condition: service_healthy
+
+volumes:
+  influxdb-data:
+  grafana-data:

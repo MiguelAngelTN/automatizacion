@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.empresa</groupId>
+  <artifactId>automatica-pruebas</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <name>automatica-pruebas</name>
+  <description>
+    Proyecto de demostracion de integracion continua, pruebas unitarias atomicas,
+    BDD (Cucumber) y pruebas de performance (JMeter) para la evaluacion de la
+    Unidad II de Automatizacion de Pruebas.
+  </description>
+
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <junit.version>5.10.2</junit.version>
+    <cucumber.version>7.18.0</cucumber.version>
+    <assertj.version>3.25.3</assertj.version>
+    <allure.version>2.35.6</allure.version>
+    <allure.commandline.version>2.36.0</allure.commandline.version>
+    <jacoco.version>0.8.12</jacoco.version>
+    <surefire.version>3.2.5</surefire.version>
+  </properties>
+
+  <dependencies>
+    <!-- ============ Pruebas unitarias (Actividad 1) ============ -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- ============ BDD (Actividad 2) ============ -->
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-java</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-junit-platform-engine</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-picocontainer</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- El formateador HTML oficial de Cucumber viene incluido en cucumber-core
+         (artefacto io.cucumber:html-formatter) y se habilita con el plugin "html". -->
+
+    <!-- ============ Allure: reporte navegable unificado (JUnit + BDD) ============ -->
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-junit-platform</artifactId>
+      <version>${allure.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-cucumber7-jvm</artifactId>
+      <version>${allure.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>automatica-pruebas</finalName>
+
+    <plugins>
+      <!-- ===== Compilacion ===== -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+      </plugin>
+
+      <!-- ===== Ejecucion de tests (Surefire + JUnit Platform) ===== -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire.version}</version>
+        <configuration>
+          <!-- El motor JUnit Platform corre en paralelo JUnit 5 + Cucumber -->
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*Test*.java</include>
+          </includes>
+          <systemPropertyVariables>
+            <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+
+      <!-- ===== Metricas de cobertura (JaCoCo) ===== -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <configuration>
+          <!-- El paquete performance/ es el arnes que sirve de sistema bajo prueba
+               para JMeter: no es codigo de negocio, por eso queda fuera del
+               calculo de cobertura. -->
+          <excludes>
+            <exclude>com/empresa/pruebas/performance/**</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals><goal>prepare-agent</goal></goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals><goal>report</goal></goals>
+          </execution>
+          <execution>
+            <!-- Quality gate: la cobertura minima bloquea el pipeline -->
+            <id>check-coverage</id>
+            <phase>verify</phase>
+            <goals><goal>check</goal></goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.70</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- ===== Generacion del reporte navegable Allure ===== -->
+      <!-- El artefacto allure-commandline se declara como dependencia del plugin para
+           que Maven resuelva tambien sus dependencias transitivas (jcommander), que son
+           necesarias para poder ejecutar la clase principal io.qameta.allure.CommandLine. -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>allure-report</id>
+            <phase>verify</phase>
+            <goals><goal>java</goal></goals>
+            <configuration>
+              <mainClass>io.qameta.allure.CommandLine</mainClass>
+              <classpathScope>compile</classpathScope>
+              <includeProjectDependencies>true</includeProjectDependencies>
+              <includePluginDependencies>true</includePluginDependencies>
+              <arguments>
+                <argument>generate</argument>
+                <argument>-o</argument>
+                <argument>${project.build.directory}/allure-report</argument>
+                <argument>${project.build.directory}/allure-results</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-commandline</artifactId>
+            <version>${allure.commandline.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+</project>

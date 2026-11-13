@@ -1,0 +1,73 @@
+# ==================================================================
+# Compilacion y artefactos de build
+# ==================================================================
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+!.mvn/wrapper/maven-wrapper.jar
+
+# ==================================================================
+# IDE
+# ==================================================================
+.idea/
+*.iml
+*.ipr
+*.iws
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+nbproject/private/
+
+# ==================================================================
+# Sistema operativo
+# ==================================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ==================================================================
+# Logs y resultados temporales de ejecucion
+# ==================================================================
+*.log
+logs/
+servidor.log
+servidor.pid
+jmeter.log
+
+# ==================================================================
+# Resultados de pruebas locales (se regeneran con cada ejecucion)
+# ==================================================================
+performance/resultados/
+performance/reporte-html/
+evidencia/resultados/
+*.jtl
+jmeter.properties.bak
+
+# ==================================================================
+# Reportes generados
+# ==================================================================
+allure-results/
+allure-report/
+target/site/
+dashboard/
+
+# ==================================================================
+# Secretos y credenciales (nunca deben subirse al repositorio)
+# ==================================================================
+.env
+.env.*
+secrets.properties
+*.keystore
+*.jks
+settings.xml
+
+# ==================================================================
+# Entregas locales generadas para la plataforma
+# ==================================================================
+entrega/

@@ -1,0 +1,108 @@
+# ===================================================================
+# Reglas de alerta para la observabilidad del pipeline
+# -------------------------------------------------------------------
+# Formato compatible con las reglas de alerta de Prometheus / Alertmanager.
+# Cada regla define la condicion que dispara la alerta, su severidad y
+# el canal de notificacion. El job "dashboard-y-alertas" del workflow
+# (.github/workflows/ci.yml) evalua estos mismos umbrales mediante
+# scripts/verificar-umbrales.py y hace fallar el pipeline, lo que a su
+# vez dispara la notificacion al canal configurado.
+# ===================================================================
+
+groups:
+  - name: pruebas-funcionales
+    interval: 5m
+    rules:
+      - alert: PruebasUnitariasEnFallo
+        expr: tasa_fallos_unitarios > 0
+        for: 1m
+        labels:
+          severidad: critico
+          tipo: funcional
+        annotations:
+          titulo: "Pruebas unitarias en fallo"
+          descripcion: "La suite unitaria presento fallos en la ultima ejecucion del pipeline."
+          canal: "correo al jefe de QA + Slack #qa-alertas + apertura de incident"
+
+      - alert: EscenariosBddEnFallo
+        expr: tasa_fallos_bdd > 0
+        for: 1m
+        labels:
+          severidad: critico
+          tipo: funcional
+        annotations:
+          titulo: "Criterios de aceptacion incumplidos"
+          descripcion: "Un escenario BDD no cumplio sus criterios de aceptacion."
+          canal: "correo al jefe de QA + Slack #qa-alertas + apertura de incident"
+
+      - alert: CoberturaInsuficiente
+        expr: cobertura_lineas_pct < 70
+        for: 5m
+        labels:
+          severidad: alto
+          tipo: calidad
+        annotations:
+          titulo: "Cobertura de codigo por debajo del quality gate"
+          descripcion: "La cobertura de lineas ({{ $value }}%) es inferior al 70% exigido."
+          canal: "Slack #qa-alertas + correo al equipo de automatizacion"
+
+  - name: pruebas-performance
+    interval: 1m
+    rules:
+      - alert: ThroughputDegradado
+        expr: tps < 50
+        for: 2m
+        labels:
+          severidad: critico
+          tipo: performance
+        annotations:
+          titulo: "Degradacion de throughput detectada"
+          descripcion: "El TPS ({{ $value }}) esta por debajo del minimo de 50."
+          canal: "correo al jefe de QA + Slack #qa-alertas + apertura de incident"
+
+      - alert: LatenciaAlta
+        expr: latencia_p95_ms > 500
+        for: 2m
+        labels:
+          severidad: alto
+          tipo: performance
+        annotations:
+          titulo: "Latencia p95 por encima del SLA"
+          descripcion: "La latencia p95 ({{ $value }} ms) supera los 500 ms permitidos."
+          canal: "Slack #qa-alertas + correo al equipo de automatizacion"
+
+      - alert: ColaDeLatenciaAlta
+        expr: latencia_p99_ms > 1000
+        for: 3m
+        labels:
+          severidad: medio
+          tipo: performance
+        annotations:
+          titulo: "Cola de latencia anormal"
+          descripcion: "La latencia p99 ({{ $value }} ms) supera 1 segundo."
+          canal: "Slack #qa-alertas + ticket en el tablero de calidad"
+
+      - alert: TasaDeErrorElevada
+        expr: tasa_error_pct > 1
+        for: 1m
+        labels:
+          severidad: critico
+          tipo: performance
+        annotations:
+          titulo: "Tasa de error por encima del umbral"
+          descripcion: "La tasa de error ({{ $value }}%) supera el 1% permitido."
+          canal: "correo al jefe de QA + Slack #qa-alertas + apertura de incident"
+
+  - name: disponibilidad-pipeline
+    interval: 10m
+    rules:
+      - alert: PipelineSinEjecutar
+        expr: tiempo_desde_ultima_ejecucion_min > 1440
+        for: 5m
+        labels:
+          severidad: medio
+          tipo: infraestructura
+        annotations:
+          titulo: "Pipeline sin ejecucion en 24 horas"
+          descripcion: "No se detectan ejecuciones recientes del pipeline de pruebas."
+          canal: "Slack #qa-alertas + ticket en el tablero de calidad"

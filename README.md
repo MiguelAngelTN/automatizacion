@@ -180,28 +180,41 @@ hace fallar el pipeline y dispara la alerta automática.
 
 ## 5. Gestión de versiones (Git)
 
+**Historial inicial.** El proyecto se inicializó en `main` con un primer commit que
+incluye el código base, la suite de pruebas, los escenarios BDD y el plan de
+performance, seguido de commits de limpieza y de actualización de la evidencia:
+
 ```bash
 git init
-git checkout -b feature/inicializacion-proyecto-maven
 git add .
-git commit -m "chore: inicializa proyecto Maven con estructura de carpetas y .gitignore"
-git checkout -b feature/pruebas-unitarias-junit
-git commit -m "feat(tests): agrega 21 pruebas unitarias atomicas con JUnit 5"
-git checkout -b feature/bdd-cucumber
-git commit -m "feat(bdd): agrega features Gherkin y step definitions con Cucumber"
-git checkout -b feature/performance-jmeter
-git commit -m "test(perf): agrega plan de carga JMeter y scripts de dashboard"
+git commit -m "chore: inicializacion del proyecto automatica-pruebas (...)"
+git commit -m "chore: limpiar artefactos temporales de Python del repositorio"
+git commit -m "docs: actualizar evidencia final del pipeline y documento de entrega"
+```
+
+**Flujo por ramas (a partir de la revisión final).** Cada cambio posterior se hizo en
+una rama de corta vida y se integró a `main` con un merge explícito (`--no-ff`), de
+modo que el historial muestra qué cambio pertenece a qué rama:
+
+```bash
+git checkout -b docs/corregir-documentacion      # erratas, trazabilidad, README
+git checkout -b feature/simulacion-alertas       # script y evidencia de alerta simulada
+git checkout main && git merge --no-ff <rama>
+git log --oneline --graph --all                  # verificación del historial
 ```
 
 Convenciones de mensajes (Conventional Commits): `feat`, `fix`, `test`, `docs`,
 `chore`, `refactor`, `perf`, `build`, `ci`. Esto permite generar el *changelog* de forma
 automática y saber de un vistazo qué cambió en cada commit.
 
+Modelo de ramas propuesto para el equipo (en este taller se aplicó solo `main` más
+ramas de corta vida):
+
 ```
-rama      : main (protegida, recibe únicamente commits vía Pull Request)
-            develop (integración continua de features)
-            feature/* (una por funcionalidad)
-hotfix/*  (correcciones urgentes sobre main)
+main        : rama estable, recibe cambios vía Pull Request
+develop     : integración continua de features
+feature/*   : una por funcionalidad
+hotfix/*    : correcciones urgentes sobre main
 ```
 
 ---
@@ -268,7 +281,7 @@ Decisiones de diseño:
 | **`@DisplayName` en español** | El reporte navegable muestra el comportamiento esperado en lenguaje natural. |
 | **`@Tag("unit")`** | Permite separar la suite unitaria de la BDD en el pipeline. |
 
-**Resultado:** 21 pruebas unitarias, todas en verde y sin dependencias entre sí.
+**Resultado:** 27 pruebas unitarias, todas en verde y sin dependencias entre sí.
 
 ---
 
@@ -399,7 +412,7 @@ automática y no depende de que alguien revise el reporte.
 
 ## 12. Evidencia generada
 
-`evidencia/` contiene las capturas de pantalla y los logstextuales de:
+`evidencia/` contiene las capturas de pantalla y los logs textuales de:
 
 1. Creación del repositorio Git, ramas y commits (`git log`).
 2. Ejecución local de la suite unitaria (`mvn test`).

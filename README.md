@@ -408,6 +408,23 @@ Cuando una alerta se dispara, el script devuelve código de salida `1`, el job d
 pipeline se marca como **fallido** y el despliegue queda bloqueado: la alerta es
 automática y no depende de que alguien revise el reporte.
 
+### 11.1 Simulación de una alerta
+
+`scripts/simular-alerta.py` toma los resultados reales de JMeter, inyecta una
+degradación controlada (8 % de peticiones lentas entre 900 y 1500 ms y 6 % de errores
+HTTP 500, con semilla fija) y ejecuta `verificar-umbrales.py` sobre ese resultado:
+
+```bash
+python3 scripts/simular-alerta.py
+```
+
+Resultado obtenido (`evidencia/logs/03-simulacion-alerta.log`): se disparan tres
+alertas (p95 = 1130 ms **alta**, p99 = 1415 ms **media**, tasa de error = 6,17 %
+**crítica**), el estado global pasa a `ALERTA` y el código de salida es `1`, que es lo
+que hace fallar el job en GitHub Actions/Jenkins. El estado real
+(`dashboard/estado-umbrales.json`) no se modifica; el simulado queda en
+`dashboard/estado-umbrales-simulado.json`.
+
 ---
 
 ## 12. Evidencia generada

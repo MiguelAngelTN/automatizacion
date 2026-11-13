@@ -1,0 +1,73 @@
+{
+  "generado": {
+    "muestras": 2333,
+    "errores": 144,
+    "tps": 157.31,
+    "p95": 1130,
+    "p99": 1415,
+    "tasa_error": 6.17
+  },
+  "verificaciones": [
+    {
+      "metrica": "Throughput (TPS)",
+      "valor": 157.31,
+      "operador": ">=",
+      "umbral": 50.0,
+      "cumple": true,
+      "severidad": "critico"
+    },
+    {
+      "metrica": "Latencia p95 (ms)",
+      "valor": 1130,
+      "operador": "<=",
+      "umbral": 500.0,
+      "cumple": false,
+      "severidad": "alto"
+    },
+    {
+      "metrica": "Latencia p99 (ms)",
+      "valor": 1415,
+      "operador": "<=",
+      "umbral": 1000.0,
+      "cumple": false,
+      "severidad": "medio"
+    },
+    {
+      "metrica": "Tasa de error (%)",
+      "valor": 6.17,
+      "operador": "<=",
+      "umbral": 1.0,
+      "cumple": false,
+      "severidad": "critico"
+    },
+    {
+      "metrica": "Muestras ejecutadas",
+      "valor": 2333,
+      "operador": ">=",
+      "umbral": 100,
+      "cumple": true,
+      "severidad": "medio"
+    }
+  ],
+  "alertas": [
+    {
+      "titulo": "Degradacion detectada: Latencia p95 (ms)",
+      "severidad": "alto",
+      "detalle": "Latencia p95 (ms) = 1130 (umbral requerido <= 500.0)",
+      "canal": "Slack #qa-alertas + correo al equipo de automatizacion"
+    },
+    {
+      "titulo": "Degradacion detectada: Latencia p99 (ms)",
+      "severidad": "medio",
+      "detalle": "Latencia p99 (ms) = 1415 (umbral requerido <= 1000.0)",
+      "canal": "Slack #qa-alertas + ticket en el tablero de calidad"
+    },
+    {
+      "titulo": "Degradacion detectada: Tasa de error (%)",
+      "severidad": "critico",
+      "detalle": "Tasa de error (%) = 6.17 (umbral requerido <= 1.0)",
+      "canal": "correo electronico al jefe de QA + Slack #qa-alertas + creacion de incident"
+    }
+  ],
+  "estado_global": "ALERTA"
+}

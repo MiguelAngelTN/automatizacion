@@ -1,0 +1,19 @@
+[simulacion] Muestras reales: 2333 | lentas inyectadas: 185 | fallidas inyectadas: 144
+[simulacion] Ejecutando verificar-umbrales.py sobre el resultado degradado...
+
+[umbrales] Estado global: ALERTA
+  [OK  ] Throughput (TPS) = 157.31 (>= 50.0)
+  [FALLA] Latencia p95 (ms) = 1130 (<= 500.0)
+  [FALLA] Latencia p99 (ms) = 1415 (<= 1000.0)
+  [FALLA] Tasa de error (%) = 6.17 (<= 1.0)
+  [OK  ] Muestras ejecutadas = 2333 (>= 100)
+
+[umbrales] ALERTAS A DISPARAR:
+  - [ALTO] Degradacion detectada: Latencia p95 (ms) -> Slack #qa-alertas + correo al equipo de automatizacion
+  - [MEDIO] Degradacion detectada: Latencia p99 (ms) -> Slack #qa-alertas + ticket en el tablero de calidad
+  - [CRITICO] Degradacion detectada: Tasa de error (%) -> correo electronico al jefe de QA + Slack #qa-alertas + creacion de incident
+
+[umbrales] El pipeline se marca como fallido para bloquear el despliegue.
+
+[simulacion] Codigo de salida del verificador: 1
+[simulacion] Resultado esperado: la alerta se dispara y el pipeline falla.

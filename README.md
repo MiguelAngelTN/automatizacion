@@ -135,7 +135,7 @@ mvn clean verify -Dgroups=bdd -Djacoco.skip=true
 
 | Reporte | Ruta | Contenido |
 |---|---|---|
-| Allure (unificado) | `target/allure-report/index.html` | JUnit 5 + BDD en un solo panel |
+| Allure | `target/allure-report/index.html` | Pruebas unitarias JUnit 5 (27 casos, por suite) |
 | Cucumber | `target/cucumber-report/cucumber-report.html` | Escenarios, pasos y etiquetas |
 | JaCoCo | `target/site/jacoco/index.html` | Cobertura de código por clase y línea |
 | JMeter | `performance/reporte-html/index.html` | Dashboard de performance |
@@ -327,7 +327,7 @@ Esquema del escenario: Aplicación de descuentos por código
 - Se usan **Cucumber Expressions** con los tipos estándar (`{string}`, `{int}`, `{float}`).
 - Un hook `@Before` reinicia el estado antes de cada escenario.
 - Reporte navegable oficial de Cucumber: `target/cucumber-report/cucumber-report.html`.
-- Además, **Allure** agrega los escenarios BDD al reporte unificado de la suite.
+- Los escenarios BDD se consolidan junto con las demás métricas en el dashboard (`dashboard/metricas.html`); el reporte Allure actual cubre solo las pruebas unitarias.
 
 ### 8.4 Integración con el pipeline
 

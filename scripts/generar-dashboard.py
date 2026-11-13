@@ -42,6 +42,10 @@ def leer_surefire(directorio):
     for archivo in sorted(os.listdir(directorio)):
         if not (archivo.startswith("TEST-") and archivo.endswith(".xml")):
             continue
+        # El motor de Cucumber tambien escribe un informe Surefire: pertenece a BDD y se
+        # contabiliza en leer_cucumber(), no como prueba unitaria.
+        if "cucumber" in archivo.lower():
+            continue
         try:
             raiz = ET.parse(os.path.join(directorio, archivo)).getroot()
         except ET.ParseError:
@@ -84,6 +88,9 @@ def leer_cucumber(ruta_json):
         fallidos = 0
         omitidos = 0
         for elemento in elementos:
+            # Los "Antecedentes" (Background) no son escenarios: se repiten antes de cada uno.
+            if elemento.get("type") == "background":
+                continue
             pasos = elemento.get("steps", []) or []
             if not pasos:
                 continue

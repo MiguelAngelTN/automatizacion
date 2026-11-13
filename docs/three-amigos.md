@@ -12,7 +12,7 @@
 ## 1. ¿Qué es una sesión *Three Amigos*?
 
 Es una reunión corta (30–60 minutos) en la que **una persona del negocio, una persona de
-QA y una persona de desarrollo** seieiunen para entender una funcionalidad **antes** de
+QA y una persona de desarrollo** reúnen para entender una funcionalidad **antes** de
 escribir código. El objetivo no es implementar, sino **alinear el lenguaje y definir los
 criterios de aceptación** que luego se convertirán en escenarios automatizados.
 
@@ -100,7 +100,7 @@ desde su perspectiva.
 | 6 | `desconocido` | `Secret123` | — | Error de credenciales | Usuario inexistente |
 
 El **ejemplo 4** fue el que exigió una tabla de *Examples*: el resultado depende de
-dos variables (estado de la cuenta y contraseña). Se decided que el estado se modelara
+dos variables (estado de la cuenta y contraseña). Se decidió que el estado se modelara
 como un parámetro del escenario en lugar de escribir un escenario aparte por cada caso.
 
 ---
